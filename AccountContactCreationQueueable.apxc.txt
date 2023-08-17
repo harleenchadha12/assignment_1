@@ -1,0 +1,29 @@
+public class AccountContactCreationQueueable implements Queueable {
+    public List<String> people;
+
+    public AccountContactCreationQueueable(List<String> people) {
+        this.people = people;
+    }
+
+    public void execute(QueueableContext context) {
+        List<Account> accountsToInsert = new List<Account>();
+        List<Contact> contactsToInsert = new List<Contact>();
+
+        for (String person : people) {
+             String[] names = person.split(' ');
+
+            Account acc = new Account(Name = person + ' Account');
+            accountsToInsert.add(acc);
+
+            Contact con = new Contact(
+                FirstName = names[0],
+                LastName = names[1],
+                AccountId = acc.Id
+            );
+            contactsToInsert.add(con);
+        }
+
+        insert accountsToInsert;
+        insert contactsToInsert;
+    }
+}
